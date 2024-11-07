@@ -45,7 +45,7 @@ function getRedisVersion()
     if (extension_loaded('redis')) {
         try {
             $redis = new Redis();
-            $redis->connect('redis', 6379);
+            $redis->connect('host.docker.internal', 6379);
             $info = $redis->info();
             return $info['redis_version'];
         } catch (Exception $e) {
