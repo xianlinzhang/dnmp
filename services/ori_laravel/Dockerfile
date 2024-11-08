@@ -42,6 +42,33 @@ RUN apk add --no-cache \
   su-exec \
   supervisor
 
+# 安装 PHP 8.2、PHP 扩展开发工具和构建工具
+RUN apk update && apk add php82 php82-dev php82-pear \
+    autoconf g++ make curl
+
+# 确保PHP的路径正确
+RUN ln -s /usr/bin/php82 /usr/bin/php && \
+    ln -s /usr/bin/phpize82 /usr/bin/phpize && \
+    ln -s /usr/bin/php-config82 /usr/bin/php-config
+
+# 下载并编译 inotify 扩展
+RUN curl -L -o /tmp/inotify.tgz https://pecl.php.net/get/inotify-3.0.0.tgz && \
+    tar -xf /tmp/inotify.tgz -C /tmp && \
+    cd /tmp/inotify-3.0.0 && \
+    phpize && \
+    ./configure && \
+    make && make install && \
+    echo "extension=inotify.so" > /etc/php82/conf.d/inotify.ini
+
+# 清理构建工具和临时文件
+RUN apk del php82-dev autoconf g++ make curl && \
+    rm -rf /var/cache/apk/* /tmp/*
+
+# 验证 inotify 是否安装成功
+RUN php -m | grep inotify
+
+
+
 # Change permissions for crond to make it executable
 RUN chmod +x /usr/sbin/crond
 RUN mkdir -p /etc/crontabs ##&& chown nobody:nobody /etc/crontabs
@@ -66,7 +93,7 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ##RUN chown -R nobody.nobody /var/www/html /run /var/lib/nginx /var/log/nginx
 
 # Create symlink for php
-RUN ln -s /usr/bin/php82 /usr/bin/php
+#RUN ln -s /usr/bin/php82 /usr/bin/php
 
 # Switch to use a non-root user from here on
 #USER nobody
