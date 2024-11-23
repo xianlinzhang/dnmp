@@ -1,0 +1,28 @@
+version: "3"
+services:
+  ori_bagisto:
+    build:
+      context: ./
+    container_name: ori_laravel
+    ports:
+      - "${LARAVES_LISTEN_PORT}:5200"
+      - "${LARAVES_NGINX_PORT}:8080"
+    volumes:
+      - ${SOURCE_DIR}/corp/project/php/tsubaki/crm-system/:/var/www/html/:rw
+    environment:
+      TZ: "$TZ"
+    restart: always
+    networks:
+      - default
+      # 可以把-default 改成下列配置，以固定容器IP
+      #default:
+      #  ipv4_address: 10.0.0.10
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      # 解除下面的注释可以设置网段，用于nginx等容器固定容器IP
+      #config:
+      #  - subnet: 10.0.0.0/24
