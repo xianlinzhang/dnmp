@@ -40,6 +40,8 @@ RUN apk add --no-cache \
   php82-iconv \
   dcron \
   su-exec \
+  nodejs \
+  npm \
   supervisor
 
 # 安装 PHP 8.2、PHP 扩展开发工具和构建工具
