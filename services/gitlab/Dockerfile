@@ -1,0 +1,2 @@
+ARG ALPINE_VERSION=latest
+FROM gitlab/gitlab-ce:${ALPINE_VERSION}
