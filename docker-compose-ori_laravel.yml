@@ -1,0 +1,23 @@
+version: "3"
+services:
+  ori_laravel:
+    build:
+      context: ./services/ori_laravel
+    container_name: ori_laravel
+    volumes:
+      - ${SOURCE_DIR}/esm:/var/www/html/:rw
+    restart: always
+    networks:
+      - default
+      # 可以把-default 改成下列配置，以固定容器IP
+      #default:
+      #  ipv4_address: 10.0.0.10
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      # 解除下面的注释可以设置网段，用于nginx等容器固定容器IP
+      #config:
+      #  - subnet: 10.0.0.0/24
